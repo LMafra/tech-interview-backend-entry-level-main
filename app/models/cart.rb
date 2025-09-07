@@ -44,7 +44,13 @@ class Cart < ApplicationRecord
   def remove_product(product)
     return { success: false, error: 'Product not found' } unless product
 
-    cart_items.find { |item| item.product.id == product.id }.destroy
+    cart_item = cart_items.find { |item| item.product.id == product.id }
+    return { success: false, error: 'Product not in cart' } unless cart_item
+
+    cart_item.destroy
+    cart_items.reload
+    update_total_price!
+
     { success: true }
   end
 

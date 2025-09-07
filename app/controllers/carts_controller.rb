@@ -48,6 +48,11 @@ class CartsController < ApplicationController
     cart = Cart.find_by(id: session[:cart_id])
     product = Product.find_by(id: params[:product_id])
 
+    unless cart
+      render json: { error: 'Cart not found' }, status: :not_found
+      return
+    end
+
     result = cart.remove_product(product)
 
     if result[:success]

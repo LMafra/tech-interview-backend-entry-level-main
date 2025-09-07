@@ -128,4 +128,73 @@ RSpec.describe '/carts', type: :request do
       end
     end
   end
+
+  describe 'DELETE /remove_item' do
+    context 'with valid parameters' do
+      it 'removes product from cart and updates total price' do
+        post '/cart', params: { product_id: product.id, quantity: 2 }, as: :json
+        cart_id = JSON.parse(response.body)['id']
+        expect(JSON.parse(response.body)['total_price']).to eq(20.0)
+
+        delete "/cart/#{product.id}", headers: valid_headers, as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type).to match(a_string_including('application/json'))
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['id']).to eq(cart_id)
+        expect(json_response['products']).to be_empty
+        expect(json_response['total_price']).to eq(0.0)
+      end
+
+      it 'removes only the specified product when multiple products exist' do
+        product2 = Product.create!(name: 'Test Product 2', price: 15.0)
+
+        post '/cart', params: { product_id: product.id, quantity: 2 }, as: :json
+        post '/cart/add_item', params: { product_id: product2.id, quantity: 1 }, as: :json
+        cart_id = JSON.parse(response.body)['id']
+        expect(JSON.parse(response.body)['total_price']).to eq(35.0)
+
+        delete "/cart/#{product.id}", headers: valid_headers, as: :json
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+        expect(json_response['id']).to eq(cart_id)
+        expect(json_response['products'].length).to eq(1)
+        expect(json_response['products'].first['id']).to eq(product2.id)
+        expect(json_response['total_price']).to eq(15.0)
+      end
+    end
+
+    context 'with invalid parameters' do
+      it 'renders a JSON response with errors when cart does not exist' do
+        delete "/cart/#{product.id}", headers: valid_headers, as: :json
+        expect(response).to have_http_status(:not_found)
+        expect(response.content_type).to match(a_string_including('application/json'))
+        json_response = JSON.parse(response.body)
+        expect(json_response['error']).to eq('Cart not found')
+      end
+
+      it 'renders a JSON response with errors when product not found' do
+        post '/cart', params: { product_id: product.id, quantity: 1 }, as: :json
+
+        delete '/cart/99999', headers: valid_headers, as: :json
+        expect(response).to have_http_status(:not_found)
+        expect(response.content_type).to match(a_string_including('application/json'))
+        json_response = JSON.parse(response.body)
+        expect(json_response['error']).to eq('Product not found')
+      end
+
+      it 'renders a JSON response with errors when product not in cart' do
+        product2 = Product.create!(name: 'Test Product 2', price: 15.0)
+        post '/cart', params: { product_id: product.id, quantity: 1 }, as: :json
+
+        delete "/cart/#{product2.id}", headers: valid_headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including('application/json'))
+        json_response = JSON.parse(response.body)
+        expect(json_response['error']).to eq('Product not in cart')
+      end
+    end
+  end
 end
