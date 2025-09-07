@@ -1,33 +1,40 @@
-version: '3'
-
 services:
-    db:
-        image: postgres:16-alpine
-        environment:
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=password
-        ports:
-            - '5432:5432'
-        volumes:
-            - postgres13:/var/lib/postgresql/data
-    redis:
-        image: redis:7.0.15-alpine
-        ports:
-        - '6379:6379'
-        volumes:
-        - redis_data:/data  
-    web:
-        ## TODO
-    test:
-        build: .
-        command: bundle exec rspec
-        volumes:
-            - .:/rails
-        depends_on:
-            - db
-            - redis 
-        environment:
-            - DATABASE_URL: postgresql://postgres:password@db:5432/myapp_test
-            - REDIS_URL: redis://redis:6379/0
+  db:
+      image: postgres:16-alpine
+      environment:
+        - POSTGRES_DB=store_development
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=password
+      ports:
+          - '5432:5432'
+      volumes:
+          - postgres13:/var/lib/postgresql/data
+  redis:
+      image: redis:7.0.15-alpine
+      ports:
+      - '6379:6379'
+      volumes:
+      - redis_data:/data
+  web:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      ports:
+      - "3000:3000"
+      depends_on:
+      - db
+      - redis
+      environment:
+          DATABASE_URL: "postgresql://postgres:password@db:5432/store_development"
+          REDIS_URL: "redis://redis:6379/0"
+          RAILS_SERVE_STATIC_FILES: "true"
+          BIND: "0.0.0.0"
+      stdin_open: true
+      tty: true
 volumes:
-    postgres13:
+  postgres13:
+  bundle_cache:
+  redis_data:
