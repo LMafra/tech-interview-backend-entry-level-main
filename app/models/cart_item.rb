@@ -11,7 +11,7 @@ class CartItem < ApplicationRecord
     save!
   end
 
-  def to_json
+  def to_json(*_args)
     {
       id: product.id,
       name: product.name,

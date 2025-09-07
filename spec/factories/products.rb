@@ -18,12 +18,12 @@ FactoryBot.define do
     end
 
     trait :electronics do
-      name { Faker::Commerce.product_name + " - " + Faker::Device.model_name }
+      name { "#{Faker::Commerce.product_name} - #{Faker::Device.model_name}" }
       price { Faker::Commerce.price(range: 50.0..2000.0) }
     end
 
     trait :clothing do
-      name { Faker::Commerce.product_name + " - " + Faker::Commerce.color + " " + Faker::Commerce.material }
+      name { "#{Faker::Commerce.product_name} - #{Faker::Commerce.color} #{Faker::Commerce.material}" }
       price { Faker::Commerce.price(range: 10.0..200.0) }
     end
 

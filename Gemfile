@@ -17,11 +17,11 @@ gem 'guard'
 gem 'guard-livereload', require: false
 
 group :development, :test do
+  gem 'byebug', '~> 12.0'
   gem 'debug', platforms: %i[mri windows]
-  gem 'rspec-rails', '~> 6.1.0'
-  gem "byebug", "~> 12.0"
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'rspec-rails', '~> 6.1.0'
   gem 'shoulda-matchers'
 end
 

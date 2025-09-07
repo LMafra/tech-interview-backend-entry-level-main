@@ -29,12 +29,12 @@ class MarkCartAsAbandonedJob
   private
 
   def enqueue_abandoned_cart_cleanup
-    Rails.logger.info "Starting abandoned cart cleanup job"
+    Rails.logger.info 'Starting abandoned cart cleanup job'
 
     enqueue_carts_for_abandonment
     enqueue_old_carts_for_deletion
 
-    Rails.logger.info "Completed abandoned cart cleanup job"
+    Rails.logger.info 'Completed abandoned cart cleanup job'
   end
 
   def enqueue_carts_for_abandonment

@@ -17,13 +17,13 @@ class Cart < ApplicationRecord
   end
 
   def self.create_for_session(session)
-    cart = create!(total_price: 0, status: "active")
+    cart = create!(total_price: 0, status: 'active')
     session[:cart_id] = cart.id
     cart
   end
 
   def add_product(product, quantity)
-    return { success: false, error: "Product not found" } unless product
+    return { success: false, error: 'Product not found' } unless product
 
     existing_item = find_item_for_product(product)
 
@@ -42,13 +42,13 @@ class Cart < ApplicationRecord
   end
 
   def remove_product(product)
-    return { success: false, error: "Product not found" } unless product
+    return { success: false, error: 'Product not found' } unless product
 
     cart_items.find { |item| item.product.id == product.id }.destroy
     { success: true }
   end
 
-  def to_json
+  def to_json(*_args)
     {
       id: id,
       products: cart_items.includes(:product).map(&:to_json),
