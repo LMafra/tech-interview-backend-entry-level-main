@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Cart, type: :model do
@@ -84,7 +86,7 @@ RSpec.describe Cart, type: :model do
         it 'returns error' do
           result = cart.add_product(nil, 2)
           expect(result[:success]).to be false
-          expect(result[:error]).to eq("Product not found")
+          expect(result[:error]).to eq('Product not found')
         end
       end
     end

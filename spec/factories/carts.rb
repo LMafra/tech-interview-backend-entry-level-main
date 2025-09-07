@@ -3,10 +3,10 @@
 FactoryBot.define do
   factory :cart do
     total_price { 0.00 }
-    status { "active" }
+    status { 'active' }
 
     trait :abandoned do
-      status { "abandoned" }
+      status { 'abandoned' }
     end
 
     trait :with_items do

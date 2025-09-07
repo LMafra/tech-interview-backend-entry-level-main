@@ -6,7 +6,7 @@ class CartsController < ApplicationController
     if cart
       render json: cart.to_json
     else
-      render json: { error: "Cart not found" }, status: :not_found
+      render json: { error: 'Cart not found' }, status: :not_found
     end
   end
 
@@ -20,7 +20,7 @@ class CartsController < ApplicationController
       render json: cart.to_json, status: :created
     else
       render json: { error: result[:error] || result[:errors] },
-             status: result[:error] == "Product not found" ? :not_found : :unprocessable_entity
+             status: result[:error] == 'Product not found' ? :not_found : :unprocessable_entity
     end
   end
 
@@ -28,7 +28,7 @@ class CartsController < ApplicationController
     cart = Cart.find_by(id: session[:cart_id])
 
     unless cart
-      render json: { error: "Cart not found" }, status: :not_found
+      render json: { error: 'Cart not found' }, status: :not_found
       return
     end
 
@@ -40,7 +40,7 @@ class CartsController < ApplicationController
       render json: cart.to_json, status: :ok
     else
       render json: { error: result[:error] || result[:errors] },
-             status: result[:error] == "Product not found" ? :not_found : :unprocessable_entity
+             status: result[:error] == 'Product not found' ? :not_found : :unprocessable_entity
     end
   end
 
@@ -54,7 +54,7 @@ class CartsController < ApplicationController
       render json: cart.to_json, status: :ok
     else
       render json: { error: result[:error] || result[:errors] },
-             status: result[:error] == "Product not found" ? :not_found : :unprocessable_entity
+             status: result[:error] == 'Product not found' ? :not_found : :unprocessable_entity
     end
   end
 

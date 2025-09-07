@@ -23,7 +23,7 @@ RSpec.describe MarkSingleCartAsAbandonedJob, type: :job do
     end
 
     it 'does not process if cart is not found' do
-      expect { described_class.new.perform(99999) }
+      expect { described_class.new.perform(99_999) }
         .not_to raise_error
     end
 
