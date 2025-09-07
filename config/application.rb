@@ -32,5 +32,9 @@ module Store
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
     config.active_job.queue_adapter = :sidekiq
+
+    config.sidekiq_scheduler = {
+      schedule_file: Rails.root.join('config', 'schedule.yml')
+    }
   end
 end

@@ -1,0 +1,4 @@
+abandoned_cart_cleanup:
+  class: MarkCartAsAbandonedJob
+  cron: '0 * * * *'
+  description: 'Clean up abandoned carts and delete old ones'
