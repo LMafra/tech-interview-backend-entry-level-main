@@ -6,6 +6,8 @@ class Cart < ApplicationRecord
 
   validates_numericality_of :total_price, greater_than_or_equal_to: 0
 
+  validates_inclusion_of :status, in: %w[active abandoned]
+
   def self.find_or_create_for_session(session)
     if session[:cart_id]
       find_by(id: session[:cart_id]) || create_for_session(session)
@@ -15,7 +17,7 @@ class Cart < ApplicationRecord
   end
 
   def self.create_for_session(session)
-    cart = create!(total_price: 0)
+    cart = create!(total_price: 0, status: "active")
     session[:cart_id] = cart.id
     cart
   end
@@ -58,7 +60,10 @@ class Cart < ApplicationRecord
     update!(total_price: cart_items.sum { |item| item.quantity * item.product.price })
   end
 
-  # TODO: lógica para marcar o carrinho como abandonado e remover se abandonado
+  def mark_as_abandoned
+    MarkSingleCartAsAbandonedJob.perform_in(3.hours, id)
+    DeleteOldAbandonedCartJob.perform_in(7.days, id)
+  end
 
   private
 
