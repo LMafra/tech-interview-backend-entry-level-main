@@ -63,4 +63,11 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Use inline job adapter for tests to avoid Redis dependency
+  config.active_job.queue_adapter = :test
+
+  # Configure Sidekiq to use fake mode for tests (no Redis required)
+  require 'sidekiq/testing'
+  Sidekiq::Testing.fake!
 end
