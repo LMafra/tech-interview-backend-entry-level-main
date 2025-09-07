@@ -1,0 +1,32 @@
+services:
+    db:
+        image: postgres:16-alpine
+        environment:
+            - POSTGRES_DB=store_test
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres13:/var/lib/postgresql/data
+    redis:
+        image: redis:7.0.15-alpine
+        ports:
+        - '6379:6379'
+        volumes:
+        - redis_data:/data
+    test:
+        build: .
+        command: bundle exec rspec
+        volumes:
+            - .:/rails
+        depends_on:
+            - db
+            - redis
+        environment:
+            DATABASE_URL: "postgresql://postgres:password@db:5432/store_test"
+            REDIS_URL: "redis://redis:6379/0"
+volumes:
+    postgres13:
+    bundle_cache:
+    redis_data:
